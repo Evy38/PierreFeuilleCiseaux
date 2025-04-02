@@ -1,11 +1,3 @@
-
-// 1 - Joueur entre son choix
-// 2 - Ordinateur entre son choix
-// 3 - On compare les choix
-// 4 - On affiche le résultat
-// 5 - BONUS: On affiche le score
-
-
 const winingCases = {
     0: {
         1: false,
@@ -21,36 +13,45 @@ const winingCases = {
     }
 }
 
-const choiceArray = ["Pierre", "Feuille", "Ciseaux"];
+const choiceArray = ["pierre", "feuille", "ciseaux"];
 
 
 // fonction convertir le choixPC en string
 function convertComputerChoice(computerIndex) {
     return choiceArray[computerIndex];
-};
+}
 
 //fonction convertir choixUtilisateur en index
 function convertUserChoice(userString) {
-   return choiceArray.indexOf(userString);
-};
+    return choiceArray.indexOf(userString);
+}
 
-
-
+//génère un nombre aléatoire entre 0 et 2 inclus
 function generateRandomNumber() {
     return Math.floor(Math.random() * choiceArray.length);
 }
 
-
+//Récupère la réponse de l'utilisateur
 function userAnswer() {
     let playerAnswerString;
-    while (choiceArray.includes(playerAnswerString)) {
-        playerAnswerString = String(prompt("Entrez votre action (pierre, feuille ou ciseaux"));
+    while (!choiceArray.includes(playerAnswerString)) {
+        playerAnswerString = String(prompt("Entrez votre action (pierre, feuille ou ciseaux) : ")).toLowerCase();
     }
 
-    return ConvertUserChoice(playerAnswerString);
+    return convertUserChoice(playerAnswerString);
 }
 
+//Proposition de re-jeu
+function replayGame() {
+    const replayAnswer = String(prompt("Voulez-vous rejouer ?")).toLowerCase();
 
+    if (replayAnswer === "oui") {
+        return true;
+    }
+    return false;
+}
+
+//Compare les deux actions pour savoir qui gagne, perd ou si égalité
 function compareChoices(userChoice, computerChoice) {
     if (userChoice === computerChoice) {
         return null;
@@ -60,25 +61,48 @@ function compareChoices(userChoice, computerChoice) {
     }
 }
 
-const playerChoice = userAnswer();
 
-const computerChoice = generateRandomNumber();
+//---------------------------------------------
+//Début du jeu
 
-alert(`L'ordinateur a joué : ${convertComputerChoice(computerChoice)}`);
 
-const gameResult = compareChoices(playerChoice, computerChoice);
+let play = true;
+let score = {
+    user: 0,
+    computer: 0
+}
+let nbrPartie = 0;
 
-let resultAlert;
-switch (gameResult) {
-    case null:
-        resultAlert = "Egalité";
-        break;
-    case true:
-        resultAlert = "Tu as gagné !";
-        break;
-    case false:
-        resultAlert = "Tu as perdu !";
-        break;
+
+while (play) {
+    const playerChoice = userAnswer();
+
+    const computerChoice = generateRandomNumber();
+
+    alert(`L'ordinateur a joué : ${convertComputerChoice(computerChoice)}`);
+
+    const gameResult = compareChoices(playerChoice, computerChoice);
+
+    let resultAlert;
+    //Renvoie une réponse en fonction du résultat
+    switch (gameResult) {
+        case null:
+            resultAlert = "Egalité";
+            break;
+        case true:
+            resultAlert = "Tu as gagné !";
+            score.user++;
+            break;
+        case false:
+            resultAlert = "Tu as perdu !";
+            score.computer++;
+            break;
+    }
+
+    alert(resultAlert);
+
+    play = replayGame();
+    nbrPartie++;
 }
 
-alert(resultPrompt);
+alert(`Vous avez gagné ${score.user} manches sur ${nbrPartie}`)
